@@ -63,8 +63,9 @@ pod_push:
 	pod trunk push
 
 # @public
+# @warning At first, setup preferences by `make setup_appledocplist`
 doc:
-	appledoc \
+	appledoc . \
  	$(PROJ_PATH)/Classes | exit 0
 
 # @public
