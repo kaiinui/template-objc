@@ -13,6 +13,8 @@ And following tasks are defined
 ```sh
 make test
   # => Do test with coverage file generation
+make release v0.1.0
+  # => Publish GitHub release
 make doc
   # => Generate appledoc
 make coveralls
