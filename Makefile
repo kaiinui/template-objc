@@ -15,13 +15,14 @@ podspec_path := $(wildcard *.podspec)
 
 # @public
 test:
-	xcodebuild \
+	xctool \
+	-sdk iphonesimulator \
 	-workspace $(PROJ_PATH).xcworkspace \
 	-scheme $(TARGET) \
 	-destination 'platform=iOS Simulator,name=$(DEVICE),OS=$(IOS_VERSION)' \
 	GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES \
 	GCC_GENERATE_TEST_COVERAGE_FILES=YES \
-	test | xcpretty -c && exit ${PIPESTATUS[0]}
+	test
 
 # @public
 coveralls:
