@@ -79,7 +79,7 @@ setup: setup_appledocplist
 	curl https://gist.githubusercontent.com/kaiinui/25662e9e32dffbb0ebcb/raw/fb744d94ef7d9a397ae07785d4d8c969504ddf3b/Podfile | sed "s/#{PROJECT}/HOGE/g" > Podfile
 
 setup_appledocplist:
-	curl 'https://gist.githubusercontent.com/kaiinui/25662e9e32dffbb0ebcb/raw/af6d5535fda4a36f844dd209cd95532813d6f8b6/AppledocSettings.plist' | \
+	curl 'https://gist.githubusercontent.com/kaiinui/25662e9e32dffbb0ebcb/raw/31759ecaab2a60e4c1664f40780e0af9a237dc5b/AppledocSettings.plist' | \
 	sed "s/#{DOMAIN}/$(DOMAIN)/g" \
 	| sed "s/#{ORGANIZATION}/$(ORGANIZATION)/g" \
 	| sed "s/#{PROJECT}/$(PROJECT)/g" \
