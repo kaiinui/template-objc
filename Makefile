@@ -7,22 +7,39 @@ DOMAIN = org.openaquamarine
 GITHUB = https://github.com/$(ORGANIZATION)/$(PROJECT)
 # GitHub account
 USER = kaiinui
+APPLEDOC_TEMPLATE = ~/RubymineProjects/SwiftyDoc
+APPLEDOC_OUTPUT = ~/dropbox/Public/___doc___$(PROJECT)
+PROJ_PATH = $(PROJECT)
 
+podspec_path := $(wildcard *.podspec)
+
+# @public
 test:
 	xcodebuild \
-	-workspace $(PROJECT).xcworkspace \
+	-workspace $(PROJ_PATH).xcworkspace \
 	-scheme $(TARGET) \
 	-destination 'platform=iOS Simulator,name=$(DEVICE),OS=$(IOS_VERSION)' \
 	GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES \
 	GCC_GENERATE_TEST_COVERAGE_FILES=YES \
 	test | xcpretty -c && exit ${PIPESTATUS[0]}
 
+# @public
 coveralls:
-	coveralls -r ./ -e Pods -e $(PROJECT)Tests
+	coveralls -r ./ -e Pods -e $(PROJ_PATH)Tests
 
+# @public
+loc:
+	find $(PROJ_PATH) \( -iname \*.m -o -iname \*.mm -o -iname \*.c -o -iname \*.cc -o -iname \*.h \) -exec wc -l '{}' \+
+	find $(PROJ_PATH)Tests \( -iname \*.m -o -iname \*.mm -o -iname \*.c -o -iname \*.cc -o -iname \*.h \) -exec wc -l '{}' \+
+
+# @public
 # @param VER: string
 # @example make release VER=v0.1.0
-release:
+release: github_release podspec pod_push
+	
+# @param VER: string
+# @example make release VER=v0.1.0
+github_release:
 	git tag $(VER) && git push --tags
 	github-release release \
 	--user $(USER) \
@@ -31,25 +48,41 @@ release:
 	--name $(VER) \
 	--pre-release
 
+# Update *.podspec's version to specified version.
+#
+# @param VER: string
+# @example make podspec VER=v0.1.0
+podspec:
+	cat $(podspec_path) \
+	| sed 's/= "[0-9]*\.[0-9]*\.[0-9]*"/= \"$(subst v,,$(VER))\"/' \
+	| sed "s/v[0-9]*\.[0-9]*\.[0-9]*/$(VER)/" \
+	> $(podspec_path)
+
+# Push to the CocoaPods Specs Repo
+pod_push:
+	pod trunk push
+
+# @public
 doc:
 	appledoc \
-	--prefix-merged-sections \
-	--template "~/RubymineProjects/SwiftyDoc" \
-	--ignore ".m" \
- 	--ignore "Pods" \
- 	--keep-undocumented-objects \
- 	--keep-undocumented-members \
- 	--create-html \
- 	--no-create-docset \
- 	--index-desc "README.md" \
- 	--company-id "$(DOMAIN)" \
- 	--project-name="$(PROJECT)" \
- 	--project-company "$(ORGANIZATION)" \
- 	--output "~/dropbox/Public/___doc___$(PROJECT)" \
- 	$(PROJECT)/Classes | exit 0
+ 	$(PROJ_PATH)/Classes | exit 0
 
-setup:
+# @public
+repo:
+	open $(GITHUB)
+
+# @public
+setup: setup_appledocplist
 	curl https://gist.githubusercontent.com/kaiinui/25662e9e32dffbb0ebcb/raw/4f10811aa798dcd95d3d96dbd50fac68b3c018e8/gitignore > .gitignore
 	curl https://gist.githubusercontent.com/kaiinui/25662e9e32dffbb0ebcb/raw/6c0fc845772ac271cafeb0755bd2eaaf599ee335/template.podspec | sed "s/#{PROJECT}/$(PROJECT)/g" | sed "s@#{GITHUB}@$(GITHUB)@g" > $(PROJECT).podspec
 	curl https://gist.githubusercontent.com/kaiinui/25662e9e32dffbb0ebcb/raw/85d9eacaf2a725454b5ea5b4834bd4a5aa1695a4/travis.yml > .travis.yml
 	curl https://gist.githubusercontent.com/kaiinui/25662e9e32dffbb0ebcb/raw/fb744d94ef7d9a397ae07785d4d8c969504ddf3b/Podfile | sed "s/#{PROJECT}/HOGE/g" > Podfile
+
+setup_appledocplist:
+	curl 'https://gist.githubusercontent.com/kaiinui/25662e9e32dffbb0ebcb/raw/af6d5535fda4a36f844dd209cd95532813d6f8b6/AppledocSettings.plist' | \
+	sed "s/#{DOMAIN}/$(DOMAIN)/g" \
+	| sed "s/#{ORGANIZATION}/$(ORGANIZATION)/g" \
+	| sed "s/#{PROJECT}/$(PROJECT)/g" \
+	| sed "s@#{APPLEDOC_TEMPLATE}@$(APPLEDOC_TEMPLATE)@g" \
+	| sed "s@#{APPLEDOC_OUTPUT}@$(APPLEDOC_OUTPUT)@g" \
+	> AppledocSettings.plist
