@@ -1,10 +1,12 @@
-PROJECT = YOUR_PROJECT
+PROJECT = template-objc
 TARGET = $(PROJECT)
 IOS_VERSION = 8.1
 DEVICE = iPhone 6
 ORGANIZATION = AquaSupport
 DOMAIN = org.openaquamarine
 GITHUB = https://github.com/$(ORGANIZATION)/$(PROJECT)
+# GitHub account
+USER = kaiinui
 
 test:
 	xcodebuild \
@@ -14,8 +16,21 @@ test:
 	GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES \
 	GCC_GENERATE_TEST_COVERAGE_FILES=YES \
 	test | xcpretty -c && exit ${PIPESTATUS[0]}
+
 coveralls:
 	coveralls -r ./ -e Pods -e $(PROJECT)Tests
+
+# @param VER: string
+# @example make release VER=v0.1.0
+release:
+	git tag $(VER) && git push --tags
+	github-release release \
+	--user $(USER) \
+	--repo $(PROJECT) \
+	--tag $(VER) \
+	--name $(VER) \
+	--pre-release
+
 doc:
 	appledoc \
 	--prefix-merged-sections \
