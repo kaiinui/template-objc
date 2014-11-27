@@ -54,10 +54,11 @@ github_release:
 # @param VER: string
 # @example make podspec VER=v0.1.0
 podspec:
-	cat $(podspec_path) \
-	| sed 's/= "[0-9]*\.[0-9]*\.[0-9]*"/= \"$(subst v,,$(VER))\"/' \
-	| sed "s/v[0-9]*\.[0-9]*\.[0-9]*/$(VER)/" \
-	> $(podspec_path)
+	sed \
+	-i "" \
+	-e 's/= "[0-9]*\.[0-9]*\.[0-9]*"/= \"$(subst v,,$(VER))\"/' \
+	-e "s/v[0-9]*\.[0-9]*\.[0-9]*/$(VER)/" \
+	$(podspec_path)
 
 # Push to the CocoaPods Specs Repo
 pod_push:
