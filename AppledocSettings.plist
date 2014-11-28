@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>--company-id</key>
+  <string>#{DOMAIN}</string>
+  <key>--project-company</key>
+  <string>#{ORGANIZATION}</string>
+  <key>--project-name</key>
+  <string>#{PROJECT}</string>
+  <key>--templates</key>
+  <string>#{APPLEDOC_TEMPLATE}</string>
+  <key>--output</key>
+  <string>#{APPLEDOC_OUTPUT}</string>
+  <key>--ignore</key>
+  <array>
+  	<string>.m</string>
+  	<string>Pods</string>
+  </array>
+  <key>--index-desc</key>
+  <key>README.md</key>
+  <key>--prefix-merged-sections</key>
+	<true/>
+  <key>--keep-undocumented-objects</key>
+	<true/>
+  <key>--keep-undocumented-members</key>
+	<true/>
+  <key>--create-html</key>
+	<true/>
+  <key>--no-create-docset</key>
+	<true/>
+</dict>
+</plist>
+

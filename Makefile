@@ -67,7 +67,8 @@ pod_push:
 # @public
 # @warning At first, setup preferences by `make setup_appledocplist`
 doc:
-	appledoc . \
+	appledoc \
+	AppledocSettings.plist \
  	$(PROJ_PATH)/Classes | exit 0
 
 # @public
@@ -82,7 +83,7 @@ setup: setup_appledocplist
 	curl https://gist.githubusercontent.com/kaiinui/25662e9e32dffbb0ebcb/raw/fb744d94ef7d9a397ae07785d4d8c969504ddf3b/Podfile | sed "s/#{PROJECT}/HOGE/g" > Podfile
 
 setup_appledocplist:
-	curl 'https://gist.githubusercontent.com/kaiinui/25662e9e32dffbb0ebcb/raw/31759ecaab2a60e4c1664f40780e0af9a237dc5b/AppledocSettings.plist' | \
+	curl 'https://gist.githubusercontent.com/kaiinui/25662e9e32dffbb0ebcb/raw/e64195c721fb946fc896005ab4f0249925a74db1/AppledocSettings.plist' | \
 	sed "s/#{DOMAIN}/$(DOMAIN)/g" \
 	| sed "s/#{ORGANIZATION}/$(ORGANIZATION)/g" \
 	| sed "s/#{PROJECT}/$(PROJECT)/g" \
